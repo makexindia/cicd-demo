@@ -53,9 +53,11 @@ until [ "$(curl -s -o /dev/null -w "%{http_code}" -u "admin:admin123" http://loc
 done
 
 echo "Triggering Jenkins Pipeline Build..."
-# Retrieve CSRF crumb and build the job
-CRUMB=$(curl -s -u "admin:admin123" 'http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
-curl -s -X POST -u "admin:admin123" -H "$CRUMB" "http://localhost:8080/job/app_pipeline/build"
+# Fetch a session cookie and the CSRF crumb, then trigger the build
+curl -c cookies.txt -s -u "admin:admin123" http://localhost:8080/ > /dev/null
+CRUMB=$(curl -s -b cookies.txt -u "admin:admin123" 'http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
+curl -s -b cookies.txt -X POST -u "admin:admin123" -H "$CRUMB" "http://localhost:8080/job/app_pipeline/build"
+rm cookies.txt # Clean up the temporary cookie file
 
 echo ""
 echo "================================================="
