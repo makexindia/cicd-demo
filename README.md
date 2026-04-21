@@ -4,12 +4,20 @@ A completely self-contained, turnkey local CI/CD environment built with Docker C
 
 ## Architecture Overview
 
+Like GitHub Codespaces or Gitpod, this lab offers a true "zero-local-setup" experience. Because the Code-Server IDE is fully containerized and pre-configured, users do not need to install Git, language runtimes, or any other tooling on their host OS to start developing.
+
 1. **Gitea**: A lightweight Git server for local source control.
 2. **Code-Server**: A browser-based VS Code IDE mapped directly to your workspace, pre-configured for Git.
 3. **Jenkins**: The CI/CD automation server that polls Gitea and builds your pipelines.
 4. **Nginx**: The production target server where your demo application is deployed.
 
 The `start.sh` script automates the entire provisioning process: it spins up the containers, configures Gitea via API, pushes a template repository, pre-checks out the code in the IDE, and triggers the first Jenkins pipeline.
+
+## Prerequisites & System Requirements
+
+- **Docker**: Docker Desktop (Windows/Mac) or Docker Engine (Linux) is required.
+- **Terminal Environment**: Windows users MUST use **Git Bash** (or WSL) to execute the `.sh` scripts natively. Mac and Linux users can use their standard terminals.
+- **Ports**: Ensure ports `80`, `3000`, `8080`, and `8443` are completely free on your host machine.
 
 ## Quick Start
 
@@ -19,6 +27,14 @@ The `start.sh` script automates the entire provisioning process: it spins up the
    ./start.sh
    ```
 3. **Wait a minute** for the automation to finish. The Cheat Sheet will be printed in your terminal!
+
+## The Quality Gate Demo
+
+Want to see the CI/CD pipeline in action?
+1. Open the Code-Server IDE (`http://localhost:8443`).
+2. Edit `app_repo/index.html` and type the word "bug" anywhere in the file.
+3. Commit and push your changes using the IDE's source control tab.
+4. Watch the Jenkins dashboard (`http://localhost:8080`) instantly trigger a build and turn **red**, blocking the deployment because the code failed the automated Quality Gate!
 
 ## Teardown
 

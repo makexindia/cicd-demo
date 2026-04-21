@@ -23,6 +23,14 @@ pipeline {
                 }
             }
         }
+        stage('Test') {
+            steps {
+                script {
+                    echo 'Running Quality Gate Checks'
+                    sh 'if grep -iq "bug" index.html; then echo "Quality Gate Failed: Found the word BUG"; exit 1; fi'
+                }
+            }
+        }
         stage('Deploy') {
             steps {
                 script {

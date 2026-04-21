@@ -34,3 +34,7 @@ The lab provides a turnkey, container-based CI/CD environment consisting of:
     ├── init.groovy
     └── plugins.txt
 ```
+
+## Agent Memory Loop Updates
+- **Quality Gate Integration:** Added a `Test` stage to `app_repo/Jenkinsfile` that implements a case-insensitive grep check for the word "bug" in `index.html`, purposefully failing the build to demonstrate CI/CD blocking capabilities.
+- **Documentation Bulletproofing:** Updated `README.md` to include a Codespaces analogy emphasizing the zero-local-setup nature of the lab. Added explicit OS-specific prerequisites (Git Bash for Windows) and mapped out the required free host ports. Included instructions for users to trigger the Quality Gate demo.
