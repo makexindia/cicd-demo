@@ -11,7 +11,7 @@ docker rm nginx 2>/dev/null || true
 # Remove the custom image built by Jenkins to ensure a fresh build next run
 docker rmi demo-website:latest 2>/dev/null || true
 
-echo "Deleting local volume folders..."
-rm -rf ./jenkins_data ./workspace
+echo "Deleting local volume folders and rogue template .git directories..."
+rm -rf ./jenkins_data ./workspace ./app_repo/.git
 
 echo "Cleanup complete. The lab is completely reset!"

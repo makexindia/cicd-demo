@@ -20,31 +20,30 @@ curl -s -X POST -H "Content-Type: application/json" \
   -d '{"name":"app_repo", "private":false, "default_branch": "main"}' \
   http://localhost:3000/api/v1/user/repos || true
 
-echo "Initializing and Pushing Local Git Repository (Idempotent)..."
-cd ./app_repo
-if [ ! -d ".git" ]; then
+if [ ! -d "./workspace/app_repo" ]; then
+    echo "Initializing and Pushing Template Repository to Gitea..."
+    cd ./app_repo
     git init
     git checkout -b main
     git config user.name "Admin"
     git config user.email "admin@example.com"
-fi
-git add .
-# Commit might fail if there's nothing to commit, so we use || true
-git commit -m "Initial commit" || true
-# Check if remote exists before adding
-git remote get-url origin > /dev/null 2>&1 || git remote add origin http://admin:admin123@localhost:3000/admin/app_repo.git
-# Check if remote url is different and update it
-git remote set-url origin http://admin:admin123@localhost:3000/admin/app_repo.git
-git push -u origin main
-cd ..
+    git add .
+    git commit -m "Initial commit" || true
+    git push http://admin:admin123@localhost:3000/admin/app_repo.git main || true
+    # Remove the .git folder so app_repo remains a clean template directory in your main workspace!
+    rm -rf .git
+    cd ..
 
-echo "Checking out code into code-server workspace..."
-if [ ! -d "./workspace/app_repo" ]; then
+    echo "Checking out code into code-server workspace..."
     git clone http://admin:admin123@localhost:3000/admin/app_repo.git ./workspace/app_repo
-else
     cd ./workspace/app_repo
-    git pull origin main
+    # Update remote so pushes work from INSIDE the code-server container
+    git remote set-url origin http://admin:admin123@gitea:3000/admin/app_repo.git
     cd ../..
+else
+    echo "Checking out code into code-server workspace..."
+    # Pull from inside the container where the 'gitea' hostname resolves
+    docker exec -w /config/workspace/app_repo code-server git pull origin main
 fi
 
 echo "Waiting for Jenkins to fully start..."
