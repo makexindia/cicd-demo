@@ -36,6 +36,7 @@ services:
       - AUTH=none
     volumes:
       - ./workspace:/config/workspace
+      - ./code-server-init.sh:/custom-cont-init.d/init-git.sh
     ports:
       - "8443:8443"
     restart: unless-stopped
