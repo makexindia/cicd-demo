@@ -1,0 +1,63 @@
+version: '3.8'
+
+networks:
+  cicd_network:
+    driver: bridge
+
+volumes:
+  gitea_data:
+
+services:
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    restart: always
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    networks:
+      - cicd_network
+    volumes:
+      - gitea_data:/data
+    ports:
+      - "3000:3000"
+      - "222:22"
+
+  code-server:
+    image: linuxserver/code-server:latest
+    container_name: code-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - AUTH=none
+    volumes:
+      - ./workspace:/config/workspace
+    ports:
+      - "8443:8443"
+    restart: unless-stopped
+    networks:
+      - cicd_network
+
+  jenkins:
+    build: ./jenkins_config
+    container_name: jenkins
+    user: root
+    restart: unless-stopped
+    networks:
+      - cicd_network
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    networks:
+      - cicd_network
+    ports:
+      - "80:80"
