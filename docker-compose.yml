@@ -7,6 +7,7 @@ networks:
 volumes:
   gitea_data:
 
+
 services:
   gitea:
     image: gitea/gitea:latest
@@ -15,6 +16,8 @@ services:
     environment:
       - USER_UID=1000
       - USER_GID=1000
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__database__DB_TYPE=sqlite3
     networks:
       - cicd_network
     volumes:
