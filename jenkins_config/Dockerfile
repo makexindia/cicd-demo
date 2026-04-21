@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:lts
+FROM jenkins/jenkins:2.555.1-lts
 USER root
 RUN apt-get update && apt-get install -y docker.io
 USER jenkins
