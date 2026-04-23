@@ -6,7 +6,7 @@ git config --global user.email "student@example.com"
 
 # Prevent Ghost Modifications caused by Windows mounts
 git config --global core.fileMode false
-git config --global core.autocrlf false
+git config --global core.autocrlf true
 git config --global core.ignorecase false
 
 echo "Configuring VS Code settings for a clean UX..."
@@ -20,3 +20,4 @@ cat << 'EOF' > /config/data/User/settings.json
     "update.showReleaseNotes": false
 }
 EOF
+chown -R 1000:1000 /config/data/User
